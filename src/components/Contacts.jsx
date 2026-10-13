@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import emailjs from '@emailjs/browser'
+
+import React, { useRef, useState } from "react";
+import { motion } from "framer-motion";
+import emailjs from "@emailjs/browser";
 import {
     FaEnvelope,
     FaGithub,
@@ -8,324 +9,418 @@ import {
     FaLinkedin,
     FaMapMarkerAlt,
     FaPhoneAlt,
-    FaSnapchat
-} from 'react-icons/fa'
+} from "react-icons/fa";
 
 const Contacts = () => {
+    const form = useRef(null);
+    const [sending, setSending] = useState(false);
+    const [sent, setSent] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const form = useRef()
-    const [sending, setSending] = useState(false)
-    const [sent, setSent] = useState(false)
+    const sendEmail = async (e) => {
+        e.preventDefault();
 
-    const sendEmail = (e) => {
-        e.preventDefault()
+        const currentForm = form.current;
+        if (!currentForm || sending) return;
 
-        const name = form.current.name.value.trim()
-        const email = form.current.email.value.trim()
-        const message = form.current.message.value.trim()
+        const name = currentForm.name.value.trim();
+        const email = currentForm.email.value.trim();
+        const message = currentForm.message.value.trim();
+
+        setSent(false);
+        setErrorMessage("");
 
         // Name validation
-        if (name === '') {
-            alert('Please enter your name.')
-            form.current.name.focus()
-            return
-        }
-
         if (name.length < 2) {
-            alert('Please enter a valid name.')
-            form.current.name.focus()
-            return
+            setErrorMessage("Please enter a name with at least 2 characters.");
+            currentForm.name.focus();
+            return;
         }
 
         // Email validation
-        if (email === '') {
-            alert('Please enter your email address.')
-            form.current.email.focus()
-            return
-        }
-
-        // Email format validation
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!emailPattern.test(email)) {
-            alert('Please enter a valid email address. Example: example@gmail.com')
-            form.current.email.focus()
-            return
+            setErrorMessage("Please enter a valid email address.");
+            currentForm.email.focus();
+            return;
         }
 
         // Message validation
-        if (message === '') {
-            alert('Please enter your message.')
-            form.current.message.focus()
-            return
-        }
-
         if (message.length < 10) {
-            alert('Please enter a message of at least 10 characters.')
-            form.current.message.focus()
-            return
+            setErrorMessage("Your message must contain at least 10 characters.");
+            currentForm.message.focus();
+            return;
         }
 
-        // Send email
-        setSending(true)
-        setSent(false)
+        setSending(true);
 
-        emailjs.sendForm(
-            'service_pxqppxe',
-            'template_ita013e',
-            form.current,
-            '8il5j4lChl5ZpHCK9'
-        )
-            .then(() => {
-                setSending(false)
-                setSent(true)
-                e.target.reset()
-            })
-            .catch((error) => {
-                console.log('Email Error:', error)
-                console.log('Status:', error.status)
-                console.log('Text:', error.text)
+        try {
+            await emailjs.sendForm(
+                "service_pxqppxe",
+                "template_ita013e",
+                currentForm,
+                "8il5j4lChl5ZpHCK9"
+            );
 
-                setSending(false)
-                alert('Message send failed. Please try again.')
-            })
-    }
+            setSent(true);
+            currentForm.reset();
+        } catch (error) {
+            console.error("Email sending failed:", error);
+            setErrorMessage(
+                "Your message could not be sent. Please try again."
+            );
+        } finally {
+            setSending(false);
+        }
+    };
+
+    const contactInfo = [
+        {
+            icon: FaMapMarkerAlt,
+            title: "Location",
+            value: "Indore, Madhya Pradesh, India",
+        },
+        {
+            icon: FaEnvelope,
+            title: "Email Address",
+            value: "aswanihoney8347@gmail.com",
+        },
+        {
+            icon: FaPhoneAlt,
+            title: "Phone Number",
+            value: "62606XXXXX",
+        },
+    ];
+
+    const socialLinks = [
+        {
+            icon: FaGithub,
+            label: "GitHub",
+            url: "https://github.com/honeyAswani",
+        },
+        {
+            icon: FaLinkedin,
+            label: "LinkedIn",
+            url: "https://www.linkedin.com/in/honey-aswani-3a0889336/",
+        },
+        {
+            icon: FaInstagram,
+            label: "Instagram",
+            url: "https://www.instagram.com/_honeyaswani_2806/",
+        },
+    ];
+
+    const inputClasses =
+        "w-full rounded-xl border border-white/10 bg-[#0c0b12] px-4 py-3.5 text-white placeholder-gray-500 outline-none transition-all duration-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20";
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="mb-14"
+        <section
             id="contacts"
+            className="relative overflow-hidden bg-[#0c0b12] px-6 py-24 text-white sm:py-28"
         >
+            {/* Background glow */}
+            <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-purple-700/15 blur-[120px]" />
+            <div className="pointer-events-none absolute -right-32 bottom-10 h-72 w-72 rounded-full bg-fuchsia-600/10 blur-[120px]" />
 
-            <div className="container mx-auto px-6">
+            <div className="container relative z-10 mx-auto max-w-6xl">
+                {/* Heading */}
+                <motion.div
+                    initial={{ opacity: 0, y: 35 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    className="mb-16 text-center"
+                >
+                    <span className="mb-4 inline-block rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-2 text-sm font-medium tracking-wide text-purple-300">
+                        LET'S CONNECT
+                    </span>
 
-                <h2 className="text-3xl font-semibold text-center">
-                    Get In <span className="text-purple-500">Touch</span>
-                </h2>
+                    <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                        Get In{" "}
+                        <span className="bg-gradient-to-r from-purple-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                            Touch
+                        </span>
+                    </h2>
 
-                <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-center mb-8">
-                    Have a project in mind or want to collaborate? lets talk.
-                </p>
+                    <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg">
+                        Have a project in mind, an opportunity to share, or
+                        just want to connect? I'd love to hear from you.
+                    </p>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mx-auto">
+                    <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: 90 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        viewport={{ once: true }}
+                        className="mx-auto mt-7 h-1 rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-500"
+                    />
+                </motion.div>
 
-                    {/* LEFT SIDE */}
+                {/* Contact content */}
+                <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-14">
+                    {/* Left: Contact form */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -40 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.7, ease: "easeOut" }}
+                        viewport={{ once: true, amount: 0.15 }}
+                        className="relative"
+                    >
+                        <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-purple-500/30 via-transparent to-fuchsia-500/20 opacity-70 blur-sm" />
 
-                    <div>
+                        <div className="relative rounded-2xl border border-white/[0.08] bg-[#13121b] p-6 sm:p-8">
+                            <div className="mb-7">
+                                <h3 className="text-2xl font-bold">
+                                    Send Me a Message
+                                </h3>
 
-                        <form
-                            ref={form}
-                            onSubmit={sendEmail}
-                            className="space-y-6"
-                        >
-
-                            {/* NAME */}
-
-                            <div>
-                                <label
-                                    htmlFor="name"
-                                    className="block text-gray-300 mb-2 text-xl font-semibold"
-                                >
-                                    Your Name
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    placeholder="Enter your name"
-                                    className="w-full bg-dark-300 border rounded-lg px-4 py-3 outline"
-                                />
+                                <p className="mt-2 text-sm leading-6 text-gray-400">
+                                    Fill out the form below and I'll get back
+                                    to you as soon as possible.
+                                </p>
                             </div>
 
-
-                            {/* EMAIL */}
-
-                            <div>
-                                <label
-                                    htmlFor="email"
-                                    className="block text-gray-300 mb-2 text-xl font-semibold"
-                                >
-                                    Email Address
-                                </label>
-
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    placeholder="Enter your email"
-                                    className="w-full bg-dark-300 border rounded-lg px-4 py-3 outline"
-                                />
-                            </div>
-
-
-                            {/* MESSAGE */}
-
-                            <div>
-                                <label
-                                    htmlFor="message"
-                                    className="block text-gray-300 mb-2 text-xl font-semibold"
-                                >
-                                    Message
-                                </label>
-
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    placeholder="Enter your message"
-                                    className="w-full bg-dark-300 border h-40 rounded-lg px-4 py-3 outline"
-                                />
-                            </div>
-
-
-                            {/* SEND BUTTON */}
-
-                            <button
-                                type="submit"
-                                disabled={sending}
-                                className="bg-blue-500 px-5 py-4 rounded-lg
-                                w-full text-3xl hover:bg-blue-700
-                                transition duration-300 cursor-pointer
-                                disabled:opacity-50"
+                            <form
+                                ref={form}
+                                onSubmit={sendEmail}
+                                className="space-y-6"
                             >
-                                {sending ? 'Sending...' : 'Send'}
-                            </button>
+                                {/* Name */}
+                                <div>
+                                    <label
+                                        htmlFor="name"
+                                        className="mb-2 block text-sm font-semibold text-gray-200"
+                                    >
+                                        Your Name
+                                    </label>
 
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        placeholder="Enter your full name"
+                                        autoComplete="name"
+                                        maxLength={100}
+                                        required
+                                        className={inputClasses}
+                                    />
+                                </div>
 
-                            {/* SUCCESS MESSAGE */}
+                                {/* Email */}
+                                <div>
+                                    <label
+                                        htmlFor="email"
+                                        className="mb-2 block text-sm font-semibold text-gray-200"
+                                    >
+                                        Email Address
+                                    </label>
 
-                            {sent && (
-                                <p className="text-purple-500 text-center font-semibold">
-                                    Message sent successfully! ✅
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        placeholder="you@example.com"
+                                        autoComplete="email"
+                                        maxLength={254}
+                                        required
+                                        className={inputClasses}
+                                    />
+                                </div>
+
+                                {/* Message */}
+                                <div>
+                                    <label
+                                        htmlFor="message"
+                                        className="mb-2 block text-sm font-semibold text-gray-200"
+                                    >
+                                        Your Message
+                                    </label>
+
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        rows={5}
+                                        placeholder="Tell me about your project or idea..."
+                                        minLength={10}
+                                        maxLength={3000}
+                                        required
+                                        className={`${inputClasses} resize-y`}
+                                    />
+                                </div>
+
+                                {/* Error message */}
+                                {errorMessage && (
+                                    <motion.p
+                                        initial={{ opacity: 0, y: 8 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        role="alert"
+                                        className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-300"
+                                    >
+                                        {errorMessage}
+                                    </motion.p>
+                                )}
+
+                                {/* Success message */}
+                                {sent && (
+                                    <motion.p
+                                        initial={{ opacity: 0, y: 8 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        role="status"
+                                        className="rounded-lg border border-green-500/20 bg-green-500/10 p-3 text-sm text-green-300"
+                                    >
+                                        Message sent successfully! Thank you
+                                        for reaching out.
+                                    </motion.p>
+                                )}
+
+                                {/* Submit button */}
+                                <motion.button
+                                    type="submit"
+                                    disabled={sending}
+                                    whileHover={
+                                        !sending ? { scale: 1.01 } : {}
+                                    }
+                                    whileTap={
+                                        !sending ? { scale: 0.98 } : {}
+                                    }
+                                    className="flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 px-6 py-4 font-semibold text-white shadow-lg shadow-purple-900/20 transition-all duration-300 hover:from-purple-500 hover:to-fuchsia-500 disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    {sending ? (
+                                        <>
+                                            <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                            Sending Message...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Send Message
+                                            <span aria-hidden="true">↗</span>
+                                        </>
+                                    )}
+                                </motion.button>
+
+                                <p className="text-center text-xs leading-5 text-gray-500">
+                                    Your details will be used to respond to
+                                    your message.
                                 </p>
-                            )}
-
-                        </form>
-
-                    </div>
-
-
-                    {/* RIGHT SIDE */}
-
-                    <div className="space-y-8 ml-15 mt-8">
-
-                        <div className="flex items-start">
-
-                            <div className="text-purple-500 text-xl">
-                                <FaMapMarkerAlt />
-                            </div>
-
-                            <div>
-                                <h3 className="ml-2 text-xl font-semibold mb-2">
-                                    Location
-                                </h3>
-
-                                <p className="text-gray-200 text-lg">
-                                    Indore,Madhya Pradesh,India
-                                </p>
-                            </div>
-
+                            </form>
                         </div>
+                    </motion.div>
 
+                    {/* Right: Contact information */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 40 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+                        viewport={{ once: true, amount: 0.15 }}
+                        className="space-y-5 lg:pt-2"
+                    >
+                        <div className="mb-7">
+                            <span className="text-sm font-semibold uppercase tracking-[0.2em] text-purple-400">
+                                Contact Information
+                            </span>
 
-                        <div className="flex items-start">
-
-                            <div className="text-purple-500 text-xl">
-                                <FaEnvelope />
-                            </div>
-
-                            <div>
-                                <h3 className="ml-2 text-xl font-semibold mb-2">
-                                    Email Address
-                                </h3>
-
-                                <p className="text-gray-200 text-lg">
-                                    aswanihoney8347@gmail.com
-                                </p>
-                            </div>
-
-                        </div>
-
-
-                        <div className="flex items-start">
-
-                            <div className="text-purple-500 text-xl">
-                                <FaPhoneAlt />
-                            </div>
-
-                            <div>
-                                <h3 className="ml-2 text-xl font-semibold mb-2">
-                                    Phone Number
-                                </h3>
-
-                                <p className="text-gray-200 text-lg">
-                                    62606XXXXX
-                                </p>
-                            </div>
-
-                        </div>
-
-
-                        <div>
-
-                            <h3 className="text-lg font-semibold mb-4">
-                                Follow Me
+                            <h3 className="mt-3 text-2xl font-bold sm:text-3xl">
+                                Let's start a conversation
                             </h3>
 
-                            <div className="flex space-x-4">
-
-                                <a
-                                    href="https://github.com/honeyAswani"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-12 h-12 rounded-full bg-dark-300
-                                    flex items-center text-2xl justify-center
-                                    text-purple-500 hover:bg-purple-600
-                                    hover:text-white transition duration-300"
-                                >
-                                    <FaGithub />
-                                </a>
-
-                                <a
-                                    href="https://www.linkedin.com/in/honey-aswani-3a0889336/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-12 h-12 rounded-full bg-dark-300
-                                    flex items-center text-2xl justify-center
-                                    text-purple-500 hover:bg-purple-700
-                                    hover:text-white transition duration-300"
-                                >
-                                    <FaLinkedin />
-                                </a>
-
-                                <a
-                                    href="https://www.instagram.com/_honeyaswani_2806/"
-                                    className="w-12 h-12 rounded-full bg-dark-300
-                                    flex items-center text-2xl justify-center
-                                    text-purple-500 hover:bg-purple-700
-                                    hover:text-white transition duration-300"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <FaInstagram />
-                                </a>
-
-                            </div>
-
+                            <p className="mt-3 max-w-lg leading-7 text-gray-400">
+                                I'm always open to discussing development
+                                projects, collaboration opportunities, and
+                                new ideas.
+                            </p>
                         </div>
 
-                    </div>
+                        {/* Contact detail cards */}
+                        {contactInfo.map((item, index) => {
+                            const Icon = item.icon;
 
+                            return (
+                                <motion.div
+                                    key={item.title}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{
+                                        duration: 0.5,
+                                        delay: index * 0.12,
+                                    }}
+                                    viewport={{ once: true, amount: 0.2 }}
+                                    whileHover={{
+                                        x: 5,
+                                        transition: { duration: 0.2 },
+                                    }}
+                                    className="group flex items-center gap-5 rounded-2xl border border-white/[0.08] bg-[#13121b] p-5 transition-colors duration-300 hover:border-purple-500/40 sm:p-6"
+                                >
+                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 text-xl text-purple-400 transition-all duration-300 group-hover:bg-purple-500 group-hover:text-white">
+                                        <Icon />
+                                    </div>
+
+                                    <div className="min-w-0">
+                                        <h4 className="mb-1 font-semibold text-white">
+                                            {item.title}
+                                        </h4>
+
+                                        <p className="break-words text-sm leading-6 text-gray-400 sm:text-base">
+                                            {item.value}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+
+                        {/* Social links */}
+                        <div className="rounded-2xl border border-white/[0.08] bg-[#13121b] p-6 sm:p-7">
+                            <h4 className="text-lg font-bold text-white">
+                                Follow Me
+                            </h4>
+
+                            <p className="mt-2 text-sm leading-6 text-gray-400">
+                                Connect with me and follow my development
+                                journey.
+                            </p>
+
+                            <div className="mt-5 flex flex-wrap gap-4">
+                                {socialLinks.map((social) => {
+                                    const Icon = social.icon;
+
+                                    return (
+                                        <motion.a
+                                            key={social.label}
+                                            href={social.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label={social.label}
+                                            title={social.label}
+                                            whileHover={{
+                                                y: -5,
+                                                scale: 1.06,
+                                            }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-xl text-purple-400 transition-colors duration-300 hover:border-purple-500/40 hover:bg-purple-500 hover:text-white"
+                                        >
+                                            <Icon />
+                                        </motion.a>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
 
+                {/* Footer note */}
+                <motion.p
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    viewport={{ once: true }}
+                    className="mt-16 text-center text-sm text-gray-500"
+                >
+                    Thanks for visiting my portfolio. I look forward to
+                    connecting with you!
+                </motion.p>
             </div>
+        </section>
+    );
+};
 
-        </motion.div>
-    )
-}
-
-export default Contacts
+export default Contacts;
