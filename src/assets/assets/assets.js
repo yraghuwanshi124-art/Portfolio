@@ -79,7 +79,7 @@ export const skills = [
 export const projects = [
   {
     title: "Zerodha - Trading Platform",
-    image: projectImg1,
+    image: projectImg3,
     description:
       "A full-stack MERN trading platform featuring secure JWT authentication, a trading dashboard, holdings, positions, and buy/sell order functionality with REST API integration and cloud deployment.",
     tech: [
@@ -96,7 +96,7 @@ export const projects = [
   },
   {
     title: "WanderLust - Travel Listing Platform",
-    image: projectImg2,
+    image: projectImg1,
     description:
       "An Airbnb-inspired full-stack travel listing platform with secure authentication, property listing management, image uploads through Cloudinary, and reviews and ratings.",
     tech: [
@@ -112,7 +112,7 @@ export const projects = [
   },
   {
     title: "SkyLume - Weather Application",
-    image: projectImg3,
+    image: projectImg4,
     description:
       "A responsive React weather application that uses the OpenWeather API to display current weather and location-based conditions, with dynamic weather visuals and loading and error states.",
     tech: [
@@ -127,7 +127,7 @@ export const projects = [
   },
   {
     title: "BlogNest - Blogging Platform",
-    image: projectImg4,
+    image: projectImg2,
     description:
       "A Java and Spring Boot blogging platform featuring blog post creation, editing, and deletion, database persistence using Spring Data JPA, dynamic pages with Thymeleaf, and authentication and authorization.",
     tech: [
@@ -143,8 +143,6 @@ export const projects = [
     demo: "https://lnkd.in/dMxquAhU",
   },
 ];
-
-
 export const workData = [
   {
     role: "DSA & Problem Solving",

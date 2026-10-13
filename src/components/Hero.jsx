@@ -115,7 +115,7 @@ return ( <section
         <span className="text-sm text-gray-500">Find me on</span>
 
 <a
-  href="https://github.com/yraghuwanshi124-art"
+  href=" https://github.com/honeyAswani"
   target="_blank"
   rel="noreferrer"
   aria-label="GitHub"
@@ -125,7 +125,7 @@ return ( <section
 </a>
 
 <a
-  href="https://www.linkedin.com/"
+  href="https://www.linkedin.com/in/honey-aswani-3a0889336/"
   target="_blank"
   rel="noreferrer"
   aria-label="LinkedIn"
